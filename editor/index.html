@@ -76,12 +76,10 @@
 			window.URL = window.URL || window.webkitURL;
 			window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
 
-			//
-
 			const editor = new Editor();
 
-			window.editor = editor; // Expose editor to Console
-			window.THREE = THREE; // Expose THREE to APP Scripts and Console
+			window.editor = editor;
+			window.THREE = THREE;
 
 			const viewport = new Viewport( editor );
 			document.body.appendChild( viewport.dom );
@@ -138,7 +136,7 @@
 				if ( object.userData.isCanvas === true ) {
 
 					viewportTabs.style.display = 'none';
-					tab3D.click(); // Volver al 3D si se elimina el Canvas
+					tab3D.click();
 
 				}
 
@@ -242,7 +240,7 @@
 
 				} );
 
-				//
+				
 
 				let timeout;
 
@@ -288,7 +286,7 @@
 
 			} );
 
-			//
+			
 
 			document.addEventListener( 'dragover', function ( event ) {
 
@@ -304,8 +302,6 @@
 				if ( event.dataTransfer.types[ 0 ] === 'text/plain' ) return; // Outliner drop
 
 				if ( event.dataTransfer.items ) {
-
-					// DataTransferItemList supports folders
 
 					editor.loader.loadItemList( event.dataTransfer.items );
 
@@ -327,7 +323,6 @@
 
 			onWindowResize();
 
-			//
 
 			let isLoadingFromHash = false;
 			const hash = window.location.hash;
@@ -352,8 +347,6 @@
 				}
 
 			}
-
-			// @deprecated, r183
 
 			if ( 'serviceWorker' in navigator ) {
 

@@ -76,11 +76,11 @@ const APP = {
 			scene.traverse( function ( child ) {
 
 				if ( child.userData.isUIElement === true ) {
-
 					const clone = child.clone();
 					clone.layers.set( 0 );
 					uiScene.add( clone );
 
+					child.visible = false;
 				}
 
 			} );
@@ -107,7 +107,6 @@ const APP = {
 
 				const hit = intersects[ 0 ].object;
 
-				// Buscar el objeto original con el script
 				let scriptSource = null;
 				scene.traverse( ( child ) => {
 
@@ -282,14 +281,12 @@ const APP = {
 
 			}
 
-			// Render escena 3D
 			renderer.render( scene, camera );
 
-			// Render UI encima (Screen Space Overlay)
 			if ( uiScene && uiCamera ) {
 
 				renderer.autoClear = false;
-				renderer.clearDepth(); // Limpiar depth buffer para que UI siempre quede encima
+				renderer.clearDepth(); 
 				renderer.render( uiScene, uiCamera );
 				renderer.autoClear = true;
 
@@ -347,7 +344,13 @@ const APP = {
 		};
 
 		this.dispose = function () {
-
+			if ( scene ) {
+				scene.traverse( function ( child ) {
+					if ( child.userData.isUIElement === true ) {
+						child.visible = true;
+					}
+				} );
+			}
 			if ( renderer ) {
 
 				renderer.dispose();

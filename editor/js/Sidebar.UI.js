@@ -7,7 +7,7 @@ function SidebarUI( editor ) {
     container.setBorderTop( '0' );
     container.setPaddingTop( '20px' );
 
-    // ── PANEL IMAGEN ──────────────────────────────────────────
+    //PANEL IMAGEN
     const imagePanel = new UIPanel();
     imagePanel.setBorderTop( '0' );
 
@@ -47,27 +47,31 @@ function SidebarUI( editor ) {
 
         const reader = new FileReader();
         reader.onload = function ( e ) {
-
             const dataURL = e.target.result;
             const object = editor.selected;
             if ( ! object || ! object.userData.isUIElement ) return;
 
             const loader = new THREE.TextureLoader();
-            const texture = loader.load( dataURL );
+            const texture = loader.load( dataURL, function () {
+                object.material.needsUpdate = true;
+                editor.signals.objectChanged.dispatch( object );
+
+                if ( editor.signals.rendererUpdated ) {
+                    editor.signals.rendererUpdated.dispatch();
+                }
+
+            } );
             texture.colorSpace = THREE.SRGBColorSpace;
 
             if ( object.material ) {
-
                 object.material.map = texture;
                 object.material.color.set( 0xffffff );
                 object.material.needsUpdate = true;
-
             }
 
             object.userData.imageDataURL = dataURL;
             imagePreview.src = dataURL;
             editor.signals.objectChanged.dispatch( object );
-
         };
 
         reader.readAsDataURL( file );
@@ -94,7 +98,7 @@ function SidebarUI( editor ) {
 
     } );
 
-    // ── PANEL BOTON ───────────────────────────────────────────
+    //PANEL BOTON
     const buttonPanel = new UIPanel();
     buttonPanel.setBorderTop( '0' );
 
@@ -139,7 +143,6 @@ function SidebarUI( editor ) {
     scriptRow.add( scriptWrapperUI );
     buttonPanel.add( scriptRow );
 
-    // Guardar script en userData al escribir
     scriptArea.addEventListener( 'input', function () {
 
         const object = editor.selected;
@@ -148,7 +151,7 @@ function SidebarUI( editor ) {
 
     } );
 
-    // ── SWITCH PANEL SEGUN TIPO ───────────────────────────────
+    // SWITCH PANEL SEGUN TIPO
     function showPanelFor( object ) {
 
         container.clear();

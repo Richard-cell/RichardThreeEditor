@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class UICanvas {
-    static create(camera){
+    static create(){
         const canvas = new THREE.Group();
         canvas.name = 'MainCanvas';
 
@@ -9,7 +9,7 @@ class UICanvas {
         canvas.userData.renderMode = 'ScreenSpaceCamera';
 
         canvas.position.set(0, 0, -1);
-        canvas.layers.set(1); // Asegura que el canvas esté en la capa 1 para renderizar con la cámara de UI
+        canvas.layers.set(1); 
 
         return canvas;
     }

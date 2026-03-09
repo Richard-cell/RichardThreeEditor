@@ -14,7 +14,6 @@ class UIScaleHandles {
 
     _getObjectSize( object ) {
 
-        // Calcular tamaño sin incluir handles ni outline
         const geo = object.geometry;
         if ( geo ) {
 

@@ -39,7 +39,7 @@ class UICanvasViewport {
         this.renderer = new THREE.WebGLRenderer( { antialias: true } );
         this.renderer.setPixelRatio( 1 );
 
-        const gridHelper = new THREE.GridHelper( 2, 20, 0x444444, 0x333333 );
+        const gridHelper = new THREE.GridHelper( 20, 200, 0x444444, 0x333333 );
         gridHelper.rotation.x = Math.PI / 2;
         this.scene.add( gridHelper );
 
@@ -94,6 +94,11 @@ class UICanvasViewport {
 
                 const clone = object.clone();
                 clone.userData.originalUuid = object.uuid;
+
+                if ( object.material ) {
+                    clone.material = object.material;
+                }
+
                 this._cloneMap.set( object.uuid, clone );
                 this.scene.add( clone );
                 this.render();
@@ -104,7 +109,6 @@ class UICanvasViewport {
 
         editor.signals.objectRemoved.add( ( object ) => {
 
-            // Si se elimina el Canvas, limpiar todos los elementos UI
             if ( object.userData.isCanvas === true ) {
 
                 const toRemove = [];
@@ -116,7 +120,6 @@ class UICanvasViewport {
                 } );
                 toRemove.forEach( uuid => this._cloneMap.delete( uuid ) );
 
-                // Limpiar outline y gizmo
                 this._outline.hide();
                 this._gizmo.hide();
                 this._selectedClone = null;
@@ -126,7 +129,6 @@ class UICanvasViewport {
 
             }
 
-            // Si se elimina un elemento UI individual
             const clone = this._cloneMap.get( object.uuid );
             if ( clone ) {
 
@@ -155,6 +157,11 @@ class UICanvasViewport {
             if ( clone ) {
 
                 clone.position.copy( object.position );
+
+                if ( object.material ) {
+                    clone.material = object.material;  
+                }
+
                 this.render();
 
             }
@@ -178,7 +185,6 @@ class UICanvasViewport {
 
         const dom = this.renderer.domElement;
 
-        // ZOOM
         dom.addEventListener( 'wheel', ( e ) => {
 
             e.preventDefault();
@@ -208,7 +214,6 @@ class UICanvasViewport {
                 this._raycaster.setFromCamera( this._mouse, this.camera );
 
 
-                // 1. Verificar handles de escala primero
                 const corner = this._scaleHandles.hitTest( this._raycaster );
                 console.log( 'corner hit:', corner, 'selectedClone:', this._selectedClone );
                 if ( corner && this._selectedClone ) {
@@ -227,7 +232,6 @@ class UICanvasViewport {
 
                 }
 
-                // 1. Verificar si clickeo el gizmo primero
                 const gizmoAxis = this._gizmo.hitTest( this._raycaster );
                 if ( gizmoAxis ) {
 
@@ -240,7 +244,6 @@ class UICanvasViewport {
 
                 }
 
-                // 2. Seleccionar objeto
                 const uiObjects = [ ...this._cloneMap.values() ];
                 const intersects = this._raycaster.intersectObjects( uiObjects );
 
@@ -257,7 +260,6 @@ class UICanvasViewport {
 
                 } else {
 
-                    // Click en vacio: deseleccionar
                     this._outline.hide();
                     this._gizmo.hide();
                     this._scaleHandles.hide();
@@ -333,7 +335,6 @@ class UICanvasViewport {
             let newX = this._drag.startPos.x + dx;
             let newY = this._drag.startPos.y - dy;
 
-            // Clamp dentro del canvas
             const box = new THREE.Box3().setFromObject( this._drag.object );
             const size = new THREE.Vector3();
             box.getSize( size );
@@ -425,7 +426,6 @@ class UICanvasViewport {
 
         const aspect = width / height;
 
-        // Actualizar borde para que represente exactamente el area del Play
         if ( this._border ) {
 
             this.scene.remove( this._border );

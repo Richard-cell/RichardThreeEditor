@@ -54,9 +54,9 @@ class UITransformGizmo {
 
         const group = new THREE.Group();
 
-        // Linea del eje desde el centro hacia arriba
+        
         const points = [
-            new THREE.Vector3( 0, 0.02, 0 ), // ← pequeño offset para no solapar el cuadro central
+            new THREE.Vector3( 0, 0.02, 0 ),
             new THREE.Vector3( 0, 0.12, 0 )
         ];
         const lineGeo = new THREE.BufferGeometry().setFromPoints( points );
@@ -65,7 +65,6 @@ class UITransformGizmo {
         line.renderOrder = 1000;
         group.add( line );
 
-        // Punta de la flecha
         const coneGeo = new THREE.ConeGeometry( 0.012, 0.035, 8 );
         const coneMat = new THREE.MeshBasicMaterial( { color, depthTest: false } );
         const cone = new THREE.Mesh( coneGeo, coneMat );
