@@ -5,7 +5,9 @@ Editor de escenas 3D construido sobre el [Three.js Editor](https://threejs.org/e
 ## 🌐 Demo en vivo
 
 [https://richard-cell.github.io/RichardThreeEditor/](https://richard-cell.github.io/RichardThreeEditor/)
+## 🎥 Demo
 
+[Ver video en Google Drive](https://drive.google.com/file/d/1qDMgdHUXSfCF-m6xFYlpHQAgDiFSa7nz/view?usp=sharing)
 ---
 
 ## 🛠️ Tecnologías
