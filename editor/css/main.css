@@ -718,6 +718,14 @@ hr {
 		display: none !important;
 	}
 
+	 #canvas-viewport {
+        left: 0 !important;
+        right: 0 !important;
+        top: 66px !important;
+        bottom: 320px !important;
+        height: auto !important;
+    }
+
 }
 
 /* DARK MODE */
