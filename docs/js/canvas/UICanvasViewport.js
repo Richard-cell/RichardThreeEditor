@@ -1,3 +1,8 @@
+/* eslint-disable padded-blocks */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable eol-last */
+/* eslint-disable no-multi-spaces */
+/* eslint-disable indent */
 import * as THREE from 'three';
 import { UIPanel } from '../libs/ui.js';
 import { UISelectionOutline } from './UISelectionOutline.js';
@@ -393,6 +398,60 @@ class UICanvasViewport {
         this._drag.object = null;
 
         } );
+
+        // TOUCH SUPPORT
+        const getTouchPos = ( touch ) => ( { clientX: touch.clientX, clientY: touch.clientY, button: 0 } );
+
+        dom.addEventListener( 'touchstart', ( e ) => {
+
+            e.preventDefault();
+            if ( e.touches.length === 1 ) {
+
+                this._touchStartX = e.touches[ 0 ].clientX;
+                this._touchStartY = e.touches[ 0 ].clientY;
+                this._touchMoved = false;
+                dom.dispatchEvent( new MouseEvent( 'mousedown', getTouchPos( e.touches[ 0 ] ) ) );
+
+            } else if ( e.touches.length === 2 ) {
+
+                // Pinch zoom - guardar distancia inicial
+                const dx = e.touches[ 0 ].clientX - e.touches[ 1 ].clientX;
+                const dy = e.touches[ 0 ].clientY - e.touches[ 1 ].clientY;
+                this._pinchStartDist = Math.sqrt( dx * dx + dy * dy );
+                this._pinchStartZoom = this._zoom;
+
+            }
+
+        }, { passive: false } );
+
+        dom.addEventListener( 'touchmove', ( e ) => {
+
+            e.preventDefault();
+
+            if ( e.touches.length === 1 ) {
+
+                this._touchMoved = true;
+                dom.dispatchEvent( new MouseEvent( 'mousemove', getTouchPos( e.touches[ 0 ] ) ) );
+
+            } else if ( e.touches.length === 2 ) {
+
+                const dx = e.touches[ 0 ].clientX - e.touches[ 1 ].clientX;
+                const dy = e.touches[ 0 ].clientY - e.touches[ 1 ].clientY;
+                const dist = Math.sqrt( dx * dx + dy * dy );
+                this._zoom = Math.max( 0.1, Math.min( 10, this._pinchStartZoom * ( dist / this._pinchStartDist ) ) );
+                this._updateCameraZoom();
+                this.render();
+
+            }
+
+        }, { passive: false } );
+
+        dom.addEventListener( 'touchend', ( e ) => {
+
+            e.preventDefault();
+            dom.dispatchEvent( new MouseEvent( 'mouseup', {} ) );
+
+        }, { passive: false } );
 
         dom.addEventListener( 'contextmenu', ( e ) => e.preventDefault() );
 
